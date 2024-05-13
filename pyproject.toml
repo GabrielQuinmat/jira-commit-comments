@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "jira-commit-comments"
+version = "0.1.0"
+description = ""
+authors = ["Gabriel Quintanar <C-Gabriel.Quintanar@charter.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pendulum = "^3.0.0"
+rich = "^13.7.1"
+gitpython = "^3.1.43"
+openai = "^1.28.1"
+python-dotenv = "^1.0.1"
+langchain = "^0.1.20"
+langchain-openai = "^0.1.6"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
