@@ -1,20 +1,17 @@
+
 from atlassian import Jira
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-
 class JiraCommen:
     def __init__(self) -> None:
-        oauth2_dict = {
-            "client_id": os.getenv("JIRA_CLIENT_ID"),
-            "token": os.getenv("JIRA_API_TOKEN"),
-        }
         self.jira = Jira(
-            url=os.getenv("JIRA_URL"),
-            cloud=True,
-            oauth2=oauth2_dict,
+            url='https://jira.charter.com',
+            token=os.getenv("JIRA_API_TOKEN")
         )
+
     
     def comment_issue(self, issue_key, comment):
         self.jira.issue_add_comment(issue_key, comment)

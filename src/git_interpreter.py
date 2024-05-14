@@ -59,4 +59,4 @@ class GitInterpreter:
             output_key='output_text',
         )
         result = chain({'input_documents': docs}, return_only_outputs=True)
-        return result
+        return result["output_text"]
