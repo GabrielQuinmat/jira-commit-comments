@@ -52,7 +52,7 @@ class GitInterpreter:
         try:
             docs = self.loader.load()
             if not docs:
-                raise Exception("No commits found. Aborting...")
+                return -1
             chain = load_summarize_chain(
                 llm=self.llm,
                 chain_type='refine',
