@@ -15,7 +15,7 @@ class GitInterpreter:
     CONCISE SUMMARY:"""
     REFINE_TEMPLATE = (
         'Your job is to produce a final summary of the work done given some commit data.' 
-        'Generate the text as a comment that will be posted in a Jira Issue.
+        'Generate the text as a comment that will be posted in a Jira Issue.'
         'Act as you were the developer and you will post your work of the day.'
         'Don\'t provide specific dates or hours, neither path of the files.'
         'Just summarize at a global level what was the main change.\n'
@@ -42,7 +42,7 @@ class GitInterpreter:
                 level='INFO', format=FORMAT, datefmt='[%X]', handlers=[RichHandler()]
             )
         self.log = logging.getLogger('rich')
-        self.llm = ChatOpenAI(api_key=os.getenv('OPENAI_API_KEY'), model='gpt-4', temperature=0.3)
+        self.llm = ChatOpenAI(api_key=os.getenv('OPENAI_API_KEY'), model='gpt-4-turbo', temperature=0.3)
         self.loader = GitDocumentLoader(file_path=json_path)
         self.prompt = PromptTemplate.from_template(self.SUMMARIZE_TEMPLATE)
         self.refine_prompt = PromptTemplate.from_template(self.REFINE_TEMPLATE)

@@ -2,3 +2,4 @@ __pycache__/
 .vscode/
 tests/*.json
 .env
+poetry.lock
