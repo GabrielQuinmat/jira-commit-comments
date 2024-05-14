@@ -44,19 +44,26 @@ class GitInterpreter:
         self.log = logging.getLogger('rich')
         self.llm = ChatOpenAI(api_key=os.getenv('OPENAI_API_KEY'), model='gpt-4-turbo', temperature=0.3)
         self.loader = GitDocumentLoader(file_path=json_path)
+        self.json_path = json_path
         self.prompt = PromptTemplate.from_template(self.SUMMARIZE_TEMPLATE)
         self.refine_prompt = PromptTemplate.from_template(self.REFINE_TEMPLATE)
 
     def interpret_commits(self):
-        docs = self.loader.load()
-        chain = load_summarize_chain(
-            llm=self.llm,
-            chain_type='refine',
-            question_prompt=self.prompt,
-            refine_prompt=self.refine_prompt,
-            return_intermediate_steps=True,
-            input_key='input_documents',
-            output_key='output_text',
-        )
-        result = chain({'input_documents': docs}, return_only_outputs=True)
-        return result["output_text"]
+        try:
+            docs = self.loader.load()
+            if not docs:
+                raise Exception("No commits found. Aborting...")
+            chain = load_summarize_chain(
+                llm=self.llm,
+                chain_type='refine',
+                question_prompt=self.prompt,
+                refine_prompt=self.refine_prompt,
+                return_intermediate_steps=True,
+                input_key='input_documents',
+                output_key='output_text',
+            )
+            result = chain({'input_documents': docs}, return_only_outputs=True)
+            return result["output_text"]
+        except Exception as e:
+            self.log.error(e)
+            return -1

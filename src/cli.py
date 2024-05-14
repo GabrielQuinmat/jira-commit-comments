@@ -17,6 +17,9 @@ def main(repo: str, json_path: str, verbose: bool = False):
         progress.update(task_id=0, completed=1)
         progress.add_task("[green]Interpreting commit data...", total=None)
         comment = GitInterpreter(verbose, json_path).interpret_commits()
+        if comment == -1:
+            typer.echo("No commits found. Aborting...")
+            return
         progress.update(task_id=1, completed=1)
         comment = Prompt.ask("Comment, edit if you want:", default=comment)
 
