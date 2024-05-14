@@ -14,14 +14,19 @@ class GitInterpreter:
     SUMMARIZE_TEMPLATE = """Summarize the changes made in this commit. {text}
     CONCISE SUMMARY:"""
     REFINE_TEMPLATE = (
-        'Your job is to produce a final summary of the work done given some commit data\n'
+        'Your job is to produce a final summary of the work done given some commit data.' 
+        'Generate the text as a comment that will be posted in a Jira Issue.
+        'Act as you were the developer and you will post your work of the day.'
+        'Don\'t provide specific dates or hours, neither path of the files.'
+        'Just summarize at a global level what was the main change.\n'
+        'If the amount of changes is too big, you can summarize the main changes using a paragraph.\n'
         'We have provided an existing summary up to a certain point: {existing_answer}\n'
         'We have the opportunity to refine the existing summary'
         '(only if needed) with some more context below.\n'
         '------------\n'
         '{text}\n'
         '------------\n'
-        'Given the new context, refine the original summary in Italian'
+        'Given the new context, refine the original summary'
         "If the context isn't useful, return the original summary."
     )
 
