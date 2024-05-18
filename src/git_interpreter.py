@@ -30,7 +30,7 @@ class GitInterpreter:
         "If the context isn't useful, return the original summary."
     )
 
-    def __init__(self, verbose, json_path) -> None:
+    def __init__(self, json_path, verbose=False) -> None:
         load_dotenv()
         FORMAT = '%(message)s'
         if verbose:
