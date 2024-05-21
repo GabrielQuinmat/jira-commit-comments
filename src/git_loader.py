@@ -21,19 +21,28 @@ class GitDocumentLoader(BaseLoader):
         When you're implementing lazy load methods, you should use a generator
         to yield documents one by one.
         """
-        with open(self.file_path, encoding='utf-8') as f:
+        with open(self.file_path, encoding="utf-8") as f:
             json_data = json.load(f)
-            line_number = 0
-            for commit in json_data:
-                line = f'Timestamp: {commit["timestamp"]}\n' f'Comment: {commit["comment"]}\n' 'Diffs:\n'
-                for diff in commit['diff_details']:
-                    line += f"Change Type: {diff['change_type']}\n"
-                    line += f"Diff:\n{diff['diff']}\n"
-                yield Document(
-                    page_content=line,
-                    metadata={'source': self.file_path, 'line_number': line_number},
-                )
-                line_number += 1
+            for branch, commits in json_data.items():
+                line_number = 0
+                for commit in commits:
+                    line = (
+                        f'Timestamp: {commit["timestamp"]}\n'
+                        f'Comment: {commit["comment"]}\n'
+                        'Diffs:\n'
+                    )
+                    for diff in commit["diff_details"]:
+                        line += f"Change Type: {diff['change_type']}\n"
+                        line += f"Diff:\n{diff['diff']}\n"
+                    yield Document(
+                        page_content=line,
+                        metadata={
+                            "source": self.file_path,
+                            "line_number": line_number,
+                            "branch": branch,
+                        },
+                    )
+                    line_number += 1
 
     # alazy_load is OPTIONAL.
     # If you leave out the implementation, a default implementation which delegates to lazy_load will be used!
@@ -46,16 +55,24 @@ class GitDocumentLoader(BaseLoader):
         # https://github.com/Tinche/aiofiles
         import aiofiles
 
-        async with aiofiles.open(self.file_path, encoding='utf-8') as f:
+        async with aiofiles.open(self.file_path, encoding="utf-8") as f:
             json_data = json.load(f)
             line_number = 0
-            async for commit in json_data:
-                line = f'Timestamp: {commit.timestamp}\n' f'Comment: {commit.comment}\n' 'Diffs:\n'
-                for diff in commit['diff_details']:
-                    line += f"Change Type: {diff['change_type']}\n"
-                    line += f"Diff:\n{diff['diff']}\n"
-                yield Document(
-                    page_content=line,
-                    metadata={'source': self.file_path, 'line_number': line_number},
-                )
-                line_number += 1
+            async for branch, commits in json_data.items():
+                for commit in commits:
+                    line = (
+                        f"Timestamp: {commit.timestamp}\n"
+                        f"Comment: {commit.comment}\n"
+                    )
+                    for diff in commit["diff_details"]:
+                        line += f"Change Type: {diff['change_type']}\n"
+                        line += f"Diff:\n{diff['diff']}\n"
+                    yield Document(
+                        page_content=line,
+                        metadata={
+                            "source": self.file_path,
+                            "line_number": line_number,
+                            "branch": commit["branch"],
+                        },
+                    )
+                    line_number += 1

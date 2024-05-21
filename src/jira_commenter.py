@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-class JiraCommen:
+class JiraCommenter:
     def __init__(self) -> None:
         self.jira = Jira(
             url='https://jira.charter.com',
