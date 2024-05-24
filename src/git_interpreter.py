@@ -75,18 +75,22 @@ class GitInterpreter:
             if not docs:
                 return -1
             print(docs[0])
-            splits = self.splitter.split_documents(docs)
-            chain = load_summarize_chain(
-                llm=self.llm,
-                chain_type="refine",
-                question_prompt=self.prompt,
-                refine_prompt=self.refine_prompt,
-                return_intermediate_steps=True,
-                input_key="input_documents",
-                output_key="output_text",
-            )
-            result = chain({"input_documents": splits}, return_only_outputs=True)
-            return result["output_text"]
+            branches = [doc["branch"] for doc in docs]
+            branch_results = []
+            for branch in branches:
+                docs_branch = [doc for doc in docs if doc["branch"] == branch]
+                splits = self.splitter.split_documents(docs_branch)
+                chain = load_summarize_chain(
+                    llm=self.llm,
+                    chain_type="refine",
+                    question_prompt=self.prompt,
+                    refine_prompt=self.refine_prompt,
+                    return_intermediate_steps=True,
+                    input_key="input_documents",
+                    output_key="output_text",
+                )
+                result = {branch: chain({"input_documents": splits}, return_only_outputs=True)["output_text"]}
+            return branch_results.append(result)
         except Exception as e:
             self.log.error(e)
             print_exception(e)
